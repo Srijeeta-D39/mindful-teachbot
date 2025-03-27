@@ -24,28 +24,14 @@ const multiHeadAttention = (
   values: string[],
   numHeads: number = 2
 ) => {
-  // Simple implementation with fixed heads
-  let result = '';
+  // Calculate attention weights
+  const attentionWeights = calculateAttention(query, keys);
   
-  // Split the attention computation into heads
-  for (let head = 0; head < numHeads; head++) {
-    const headKeys = keys.map(k => k.slice(head * (k.length / numHeads), (head + 1) * (k.length / numHeads)));
-    const headQuery = query.slice(head * (query.length / numHeads), (head + 1) * (query.length / numHeads));
-    
-    const attentionWeights = calculateAttention(headQuery, headKeys);
-    
-    // Apply attention weights to values
-    const headContext = attentionWeights.reduce((context, weight, i) => {
-      return context + weight * values[i].length;
-    }, 0);
-    
-    // Append weighted values to result
-    result += values
-      .filter((_, i) => attentionWeights[i] > 0.1)
-      .join(' ');
-  }
+  // Find the index of the highest attention weight
+  const maxIndex = attentionWeights.indexOf(Math.max(...attentionWeights));
   
-  return result;
+  // Return the most relevant response
+  return values[maxIndex] || '';
 };
 
 // A simple tokenizer for the model
@@ -121,6 +107,103 @@ const subjectResponses: Record<string, string[]> = {
   ]
 };
 
+// Create keyword mappings for better question matching
+const keywordMappings: Record<string, Record<string, number[]>> = {
+  'Mathematics': {
+    'function': [0],
+    'pythagorean': [1], 'triangle': [1], 'hypotenuse': [1],
+    'calculus': [2], 'derivative': [2], 'integral': [2],
+    'prime': [3], 'numbers': [3],
+    'statistics': [4], 'data': [4], 'probability': [4],
+    'matrix': [5], 'matrices': [5], 'linear algebra': [5]
+  },
+  'Physics': {
+    'newton': [0], 'motion': [0], 'inertia': [0], 'force': [0],
+    'quantum': [1], 'mechanics': [1], 'uncertainty': [1], 'wave': [1],
+    'relativity': [2], 'einstein': [2], 'spacetime': [2], 'gravity': [2],
+    'energy': [3], 'conservation': [3], 'work': [3],
+    'thermodynamics': [4], 'heat': [4], 'entropy': [4],
+    'electromagnetic': [5], 'radiation': [5], 'light': [5], 'wave': [5]
+  },
+  'Computer Science': {
+    'algorithm': [0], 'complexity': [0], 'efficiency': [0],
+    'programming': [1], 'language': [1], 'syntax': [1], 'code': [1],
+    'object': [2], 'class': [2], 'inheritance': [2], 'polymorphism': [2],
+    'database': [3], 'sql': [3], 'query': [3], 'storage': [3],
+    'artificial': [4], 'intelligence': [4], 'ai': [4], 'learning': [4],
+    'big o': [5], 'time complexity': [5], 'space complexity': [5]
+  },
+  'History': {
+    'world war': [0], 'ww2': [0], 'nazi': [0], 'holocaust': [0],
+    'renaissance': [1], 'art': [1], 'da vinci': [1], 'michelangelo': [1],
+    'industrial': [2], 'revolution': [2], 'factory': [2], 'steam': [2],
+    'egypt': [3], 'pharaoh': [3], 'pyramid': [3], 'mummy': [3],
+    'cold war': [4], 'soviet': [4], 'nuclear': [4], 'cuban missile': [4],
+    'french revolution': [5], 'bastille': [5], 'napoleon': [5], 'robespierre': [5]
+  },
+  'Literature': {
+    'shakespeare': [0], 'hamlet': [0], 'macbeth': [0], 'romeo': [0],
+    'novel': [1], 'fiction': [1], 'character': [1], 'plot': [1],
+    'poetry': [2], 'poem': [2], 'verse': [2], 'stanza': [2],
+    'iliad': [3], 'odyssey': [3], 'homer': [3], 'trojan': [3], 
+    'modernist': [4], 'joyce': [4], 'woolf': [4], 'stream of consciousness': [4],
+    'austen': [5], 'pride and prejudice': [5], 'emma': [5], 'jane': [5]
+  },
+  'Philosophy': {
+    'epistemology': [0], 'knowledge': [0], 'truth': [0], 'belief': [0],
+    'existentialism': [1], 'existence': [1], 'sartre': [1], 'camus': [1],
+    'ethics': [2], 'moral': [2], 'right': [2], 'wrong': [2], 'good': [2], 'bad': [2],
+    'plato': [3], 'socrates': [3], 'cave': [3], 'form': [3], 'republic': [3],
+    'kant': [4], 'categorical': [4], 'imperative': [4], 'duty': [4],
+    'nietzsche': [5], 'god is dead': [5], 'will to power': [5], 'ubermensch': [5]
+  }
+};
+
+// Function to find the most relevant response index based on keywords
+const findRelevantResponseIndex = (query: string, subject: string): number => {
+  const tokens = tokenize(query);
+  const subjectKeywords = keywordMappings[subject] || {};
+  
+  // Count the matches for each response
+  const responseMatches = new Array(subjectResponses[subject]?.length || 0).fill(0);
+  
+  tokens.forEach(token => {
+    // Check for exact matches
+    if (subjectKeywords[token]) {
+      subjectKeywords[token].forEach(index => {
+        responseMatches[index] += 2; // Give more weight to exact matches
+      });
+    }
+    
+    // Check for partial matches
+    Object.keys(subjectKeywords).forEach(keyword => {
+      if (keyword.includes(token) || token.includes(keyword)) {
+        subjectKeywords[keyword].forEach(index => {
+          responseMatches[index] += 1;
+        });
+      }
+    });
+  });
+  
+  // Find the response with the most matches
+  let bestResponseIndex = 0;
+  let highestMatch = 0;
+  
+  responseMatches.forEach((matchCount, index) => {
+    if (matchCount > highestMatch) {
+      highestMatch = matchCount;
+      bestResponseIndex = index;
+    }
+  });
+  
+  // If no good matches, pick a random response
+  if (highestMatch === 0) {
+    return Math.floor(Math.random() * responseMatches.length);
+  }
+  
+  return bestResponseIndex;
+};
+
 // Generate a response using our simple transformer model implementation
 const generateTransformerResponse = (query: string, subject: string): string => {
   // Tokenize the input query
@@ -153,11 +236,11 @@ const generateTransformerResponse = (query: string, subject: string): string => 
     ).map(val => val / (vectors.length || 1));
   });
   
-  // Get most relevant information using attention
-  let mostRelevantInfo = '';
+  // Find the most relevant response index based on keywords
+  const relevantIndex = findRelevantResponseIndex(query, subject);
   
-  // Use the multi-head attention mechanism
-  mostRelevantInfo = multiHeadAttention(queryVector, keys, subjectData);
+  // Get the most relevant response
+  let mostRelevantInfo = subjectData[relevantIndex] || '';
   
   // Add conversational openings and personal touches
   const openings = [
@@ -180,22 +263,27 @@ const generateTransformerResponse = (query: string, subject: string): string => 
 
   // Check if a meaningful response was generated
   if (mostRelevantInfo) {
-    // Find tokens in the query that match subject area
-    const subjectTokens = tokenize(subject.toLowerCase());
-    
     // Construct a more personalized response based on query type
     const randomOpening = openings[Math.floor(Math.random() * openings.length)];
     const randomTouch = personalTouches[Math.floor(Math.random() * personalTouches.length)];
     
+    // Adjust response based on query type
+    let response = '';
     if (queryTokens.includes('what') || queryTokens.includes('explain') || queryTokens.includes('tell')) {
-      return `${randomOpening}${mostRelevantInfo}${randomTouch}`;
+      response = `${randomOpening}${mostRelevantInfo}${randomTouch}`;
     } else if (queryTokens.includes('how')) {
-      return `${randomOpening}Here's how ${queryTokens.filter(t => t.length > 3).join(', ')} works: ${mostRelevantInfo}${randomTouch}`;
+      response = `${randomOpening}Here's how it works: ${mostRelevantInfo}${randomTouch}`;
     } else if (queryTokens.includes('why')) {
-      return `${randomOpening}The reason behind ${queryTokens.filter(t => t.length > 3).join(', ')} is fascinating: ${mostRelevantInfo}${randomTouch}`;
+      response = `${randomOpening}The reason is fascinating: ${mostRelevantInfo}${randomTouch}`;
+    } else if (queryTokens.includes('can') || queryTokens.includes('could')) {
+      response = `${randomOpening}Yes, let me explain: ${mostRelevantInfo}${randomTouch}`;
+    } else if (queryTokens.includes('define') || queryTokens.includes('meaning')) {
+      response = `${randomOpening}Here's what that means: ${mostRelevantInfo}${randomTouch}`;
     } else {
-      return `${randomOpening}Regarding ${queryTokens.filter(t => t.length > 3).join(', ')}: ${mostRelevantInfo}${randomTouch}`;
+      response = `${randomOpening}Regarding ${queryTokens.filter(t => t.length > 3).slice(0, 2).join(', ')}: ${mostRelevantInfo}${randomTouch}`;
     }
+    
+    return response;
   }
   
   return `I'm not entirely sure about that specific aspect of ${subject} yet, but I'd be happy to discuss something else in this area! What particular topic interests you most?`;
