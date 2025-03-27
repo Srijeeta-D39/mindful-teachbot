@@ -15,7 +15,10 @@ interface ChatMessageProps {
 
 const ChatMessage = ({ message, isLatest }: ChatMessageProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   
+  // Handle message appearance animation
   useEffect(() => {
     // Small delay for animation
     const timer = setTimeout(() => {
@@ -24,6 +27,34 @@ const ChatMessage = ({ message, isLatest }: ChatMessageProps) => {
     
     return () => clearTimeout(timer);
   }, []);
+
+  // Handle text typing animation for assistant messages
+  useEffect(() => {
+    if (message.role === "assistant" && isLatest) {
+      setIsTyping(true);
+      let index = 0;
+      const content = message.content;
+      
+      // Clear any previous text
+      setDisplayedText("");
+      
+      // Set up the typing interval
+      const typingInterval = setInterval(() => {
+        if (index < content.length) {
+          setDisplayedText((prev) => prev + content.charAt(index));
+          index++;
+        } else {
+          clearInterval(typingInterval);
+          setIsTyping(false);
+        }
+      }, 20); // Speed of typing
+      
+      return () => clearInterval(typingInterval);
+    } else {
+      // For user messages or non-latest messages, show full text immediately
+      setDisplayedText(message.content);
+    }
+  }, [message.content, message.role, isLatest]);
 
   return (
     <div 
@@ -36,9 +67,12 @@ const ChatMessage = ({ message, isLatest }: ChatMessageProps) => {
           message.role === "user" 
             ? "bg-primary text-primary-foreground ml-4 rounded-tr-sm" 
             : "bg-secondary text-secondary-foreground mr-4 rounded-tl-sm"
-        } message-appear`}
+        } message-appear relative`}
       >
-        <div className="text-sm md:text-base whitespace-pre-wrap">{message.content}</div>
+        <div className="text-sm md:text-base whitespace-pre-wrap">
+          {message.role === "assistant" && isLatest ? displayedText : message.content}
+          {isTyping && <span className="typing-cursor">|</span>}
+        </div>
         <div className="text-xs opacity-70 mt-1 text-right">
           {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </div>

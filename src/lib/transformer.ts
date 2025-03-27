@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 
 // Basic implementation of attention mechanism
@@ -69,55 +68,55 @@ const vectorize = (token: string): number[] => {
   return vector.map(val => val / (magnitude || 1));
 };
 
-// Subject knowledge bases
+// Subject knowledge bases with more humanized, conversational responses
 const subjectResponses: Record<string, string[]> = {
   'Mathematics': [
-    "In mathematics, a function is a relation between sets that associates each element of a domain to exactly one element of a range.",
-    "The Pythagorean theorem states that the square of the length of the hypotenuse equals the sum of squares of the other two sides.",
-    "Calculus is the mathematical study of continuous change, in the same way that geometry is the study of shape.",
-    "A prime number is a natural number greater than 1 that is not a product of two smaller natural numbers.",
-    "Statistics is the discipline that concerns the collection, organization, analysis, interpretation, and presentation of data.",
-    "In mathematics, a matrix is a rectangular array of numbers, symbols, or expressions, arranged in rows and columns."
+    "I'd love to explain functions in mathematics! A function is like a machine that takes an input and produces exactly one output. For every element you put in, you get exactly one element out.",
+    "The Pythagorean theorem is actually quite fascinating - it tells us that in a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides. It's pretty amazing how this works for ALL right triangles!",
+    "Calculus might seem intimidating, but it's really just the study of how things change. It helps us understand rates of change and accumulation - things that are constantly happening in the world around us.",
+    "Prime numbers are like the atoms of mathematics - they're the building blocks that can't be broken down further. Any number greater than 1 that isn't divisible by anything except itself and 1 is prime.",
+    "Statistics is all about making sense of data. It helps us collect information, organize it, and draw meaningful conclusions - which is super important in today's data-driven world!",
+    "Matrices might look like just grids of numbers, but they're incredibly useful tools. They help us solve systems of equations, transform coordinates, and they're essential in computer graphics and machine learning."
   ],
   'Physics': [
-    "Newton's first law states that an object will remain at rest or in uniform motion in a straight line unless acted upon by an external force.",
-    "Quantum mechanics is a fundamental theory in physics that provides a description of the physical properties of nature at the scale of atoms and subatomic particles.",
-    "The theory of relativity usually encompasses two interrelated theories by Albert Einstein: special relativity and general relativity.",
-    "In physics, energy is the quantitative property that must be transferred to an object to perform work on, or to heat, the object.",
-    "Thermodynamics is a branch of physics concerned with heat and temperature and their relation to energy, work, radiation, and properties of matter.",
-    "The electromagnetic spectrum is the range of frequencies of electromagnetic radiation and their respective wavelengths and photon energies."
+    "Newton's first law is pretty intuitive when you think about it - objects like to keep doing what they're already doing unless something interferes. If it's moving, it'll keep moving. If it's still, it'll stay put. This property is called inertia!",
+    "Quantum mechanics reveals a weird but fascinating world at the tiny scale. Particles can behave like waves, exist in multiple states at once, and even seem to 'know' when they're being observed. It challenges our everyday intuition!",
+    "Einstein's theory of relativity completely changed how we understand space and time. Instead of being fixed and absolute, they're actually connected and can stretch or compress depending on motion and gravity. Mind-blowing, right?",
+    "Energy is such a fundamental concept - it's basically the ability to do work or create change. And one of the coolest things about energy is that it can't be created or destroyed, only transformed from one form to another.",
+    "Thermodynamics is all about heat, energy, and work - and it affects everything from car engines to the universe itself. The laws of thermodynamics are some of the most fundamental rules in all of physics!",
+    "The electromagnetic spectrum includes everything from radio waves to gamma rays, with visible light being just a tiny slice in the middle. It's amazing to think that all these different phenomena are actually the same type of wave, just with different energies!"
   ],
   'Computer Science': [
-    "An algorithm is a finite sequence of well-defined, computer-implementable instructions, typically to solve a class of problems or to perform a computation.",
-    "A programming language is a formal language comprising a set of instructions that produce various kinds of output.",
-    "Object-oriented programming (OOP) is a programming paradigm based on the concept of 'objects', which can contain data and code.",
-    "A database is an organized collection of data, generally stored and accessed electronically from a computer system.",
-    "Artificial intelligence (AI) is intelligence demonstrated by machines, unlike the natural intelligence displayed by humans and animals.",
-    "Big O notation is a mathematical notation that describes the limiting behavior of a function when the argument tends towards a particular value or infinity."
+    "Algorithms are like recipes for solving problems. They're step-by-step instructions that help computers (and humans!) complete tasks efficiently. The cool thing is that the same algorithm works no matter what computer you run it on.",
+    "Programming languages are how we communicate with computers. Each language has its own style and strengths - some are great for web development, others for scientific computing, and others for making games. It's all about picking the right tool for the job!",
+    "Object-oriented programming is a really intuitive way to structure code. It models real-world objects with both data (properties) and behaviors (methods). This approach makes code more organized and reusable - pretty neat, right?",
+    "Databases are like super-organized digital filing cabinets. They store massive amounts of information and let us retrieve exactly what we need, when we need it. Without them, services like social media or online shopping wouldn't be possible!",
+    "Artificial intelligence tries to create systems that can learn and make decisions. While we're nowhere near human-level general intelligence, AI has gotten impressively good at specific tasks like image recognition and language processing.",
+    "Big O notation helps us understand how algorithms perform as data gets larger. It's crucial because an algorithm that works fine with small amounts of data might become painfully slow with larger datasets. Efficiency matters!"
   ],
   'History': [
-    "World War II, also known as the Second World War, was a global war that lasted from 1939 to 1945.",
-    "The Renaissance was a period in European history marking the transition from the Middle Ages to modernity and covering the 15th and 16th centuries.",
-    "The Industrial Revolution was the transition to new manufacturing processes in Europe and the United States, in the period from about 1760 to sometime between 1820 and 1840.",
-    "Ancient Egypt was a civilization of ancient North Africa, concentrated along the lower reaches of the Nile River, situated in the place that is now the country Egypt.",
-    "The Cold War was a period of geopolitical tension between the Soviet Union and the United States and their respective allies, the Eastern Bloc and the Western Bloc, after World War II.",
-    "The French Revolution was a period of far-reaching social and political upheaval in France and its colonies beginning in 1789 and ending in the late 1790s."
+    "World War II was a truly global conflict that reshaped our world. It involved over 30 countries, cost tens of millions of lives, and led to major social and political changes that we still feel today.",
+    "The Renaissance was this incredible period of rebirth in Europe where art, science, and learning flourished. People began questioning old ideas and embracing new ones - leading to amazing achievements in architecture, painting, literature, and science!",
+    "The Industrial Revolution transformed not just how we make things, but how we live. People moved from farms to factories, cities grew rapidly, and for the first time, machines began doing work that humans and animals had always done before.",
+    "Ancient Egypt created one of the most fascinating civilizations ever. For over 3,000 years, they built monuments that still amaze us today, developed sophisticated writing systems, and created a complex culture with detailed beliefs about life and death.",
+    "The Cold War wasn't fought with direct battles between superpowers, but through espionage, proxy wars, and intense competition. The threat of nuclear war hung over everything, influencing politics, culture, and daily life around the world.",
+    "The French Revolution completely overturned the old political and social order. It began with calls for liberty, equality, and fraternity but eventually led to the Reign of Terror and then Napoleon's rise to power - showing how revolutions can take unexpected turns."
   ],
   'Literature': [
-    "William Shakespeare was an English poet, playwright, and actor, widely regarded as the greatest writer in the English language and the world's pre-eminent dramatist.",
-    "The novel is a relatively long work of narrative fiction, normally written in prose form, and which is typically published as a book.",
-    "Poetry is a form of literature that uses aesthetic and rhythmic qualities of language to evoke meanings in addition to, or in place of, the prosaic ostensible meaning.",
-    "The Iliad is an ancient Greek epic poem traditionally attributed to Homer, that tells of the Trojan War.",
-    "Modernism is a philosophical movement that, along with cultural trends and changes, arose from wide-scale and far-reaching transformations in Western society.",
-    "Jane Austen was an English novelist known primarily for her six major novels, which interpret, critique and comment upon the British landed gentry at the end of the 18th century."
+    "Shakespeare wasn't just a playwright - he was a master of language who transformed English literature. He invented countless words and phrases we still use today, and created characters whose struggles feel remarkably modern even 400 years later.",
+    "The novel as an art form gives us this amazing window into other lives and experiences. It can transport us to different times, places, and even into the minds of people completely different from ourselves.",
+    "Poetry does something really special - it uses the sounds, rhythms, and patterns of language to create meaning and emotion that goes beyond just the dictionary definitions of words. It's language at its most concentrated and powerful!",
+    "The Iliad is one of the oldest stories we have, and it's still captivating. It examines big themes like honor, rage, glory, and mortality through the lens of the Trojan War. It's been influencing storytellers for nearly 3,000 years!",
+    "Modernist literature tried to capture the fragmented, disorienting experience of life in the early 20th century. Writers experimented with stream-of-consciousness techniques, non-linear narratives, and multiple perspectives to show how complex our inner lives really are.",
+    "Jane Austen was revolutionary in how she portrayed everyday life and the interior thoughts of her characters, especially women. Her novels seem like simple romance stories on the surface, but they're actually sharp social critiques full of wit and insight."
   ],
   'Philosophy': [
-    "Epistemology is the branch of philosophy concerned with the theory of knowledge.",
-    "Existentialism is a form of philosophical inquiry that explores the problem of human existence and centers on the lived experience of the thinking, feeling, acting individual.",
-    "Ethics or moral philosophy is a branch of philosophy that involves systematizing, defending, and recommending concepts of right and wrong conduct.",
-    "Plato was an Athenian philosopher during the Classical period in Ancient Greece, founder of the Platonist school of thought, and the Academy, the first institution of higher learning in the Western world.",
-    "Immanuel Kant was a German philosopher and one of the central Enlightenment thinkers, who argued that the human mind creates the structure of human experience.",
-    "Friedrich Nietzsche was a German philosopher, cultural critic, composer, poet, and philologist whose work has exerted a profound influence on modern intellectual history."
+    "Epistemology tackles some fascinating questions: How do we know what we know? Can we be certain about anything? What's the difference between knowledge and belief? These questions might seem abstract, but they're actually fundamental to how we understand our world.",
+    "Existentialism focuses on our individual existence and the choices we make. Thinkers like Sartre suggested that we create our own meaning in a universe that doesn't provide it for us - which is both liberating and a bit terrifying!",
+    "Ethics investigates what makes actions right or wrong, good or bad. Different ethical theories might emphasize consequences, duties, virtues, or care - and these different approaches can lead to very different conclusions about how we should live.",
+    "Plato's ideas continue to shape Western thought 2,400 years later. His allegory of the cave, theory of forms, and dialogues on justice, knowledge, and love remain incredibly influential and thought-provoking even today.",
+    "Kant revolutionized philosophy by suggesting that our minds actively structure our experience rather than passively receiving information. His categorical imperative - acting only according to rules you'd want universalized - remains one of the most important ideas in ethics.",
+    "Nietzsche challenged conventional morality and urged us to question received wisdom. His ideas about power, the 'death of God,' and creating our own values have profoundly influenced modern thought, even if they're often misunderstood or oversimplified."
   ]
 };
 
@@ -138,9 +137,9 @@ const generateTransformerResponse = (query: string, subject: string): string => 
     new Array(queryVectors[0]?.length || 10).fill(0)
   ).map(val => val / (queryVectors.length || 1));
   
-  // Simple response generation for demo purposes
+  // If no valid query, return a friendly prompt
   if (queryTokens.length === 0) {
-    return "I don't understand your question. Could you please rephrase it?";
+    return "I didn't quite catch that. Could you rephrase your question? I'm here to help you learn about " + subject + "!";
   }
   
   // Create keys from subject data
@@ -159,29 +158,46 @@ const generateTransformerResponse = (query: string, subject: string): string => 
   // Use the multi-head attention mechanism
   mostRelevantInfo = multiHeadAttention(queryVector, keys, subjectData);
   
-  // Simplistic response generation (in a real model this would be much more sophisticated)
+  // Add conversational openings and personal touches
+  const openings = [
+    "Great question! ",
+    "I'd be happy to explain that. ",
+    "That's an interesting topic! ",
+    "I'm glad you asked about that. ",
+    "Let me help you understand that. ",
+    "That's something I enjoy discussing! "
+  ];
+  
+  const personalTouches = [
+    " Does that make sense?",
+    " What do you think about that?",
+    " I hope that helps clarify things!",
+    " Is there a specific part you'd like me to elaborate on?",
+    " That's a fascinating area to explore, isn't it?",
+    " Is there anything else you'd like to know about this topic?"
+  ];
+
+  // Check if a meaningful response was generated
   if (mostRelevantInfo) {
     // Find tokens in the query that match subject area
     const subjectTokens = tokenize(subject.toLowerCase());
-    const hasSubjectInQuery = queryTokens.some(token => 
-      subjectTokens.includes(token) || 
-      token.includes(subjectTokens[0]) || 
-      subjectTokens[0].includes(token)
-    );
     
-    // Construct a more personalized response
+    // Construct a more personalized response based on query type
+    const randomOpening = openings[Math.floor(Math.random() * openings.length)];
+    const randomTouch = personalTouches[Math.floor(Math.random() * personalTouches.length)];
+    
     if (queryTokens.includes('what') || queryTokens.includes('explain') || queryTokens.includes('tell')) {
-      return `Here's what you should know about ${queryTokens.filter(t => t.length > 3).join(', ')}: ${mostRelevantInfo}`;
+      return `${randomOpening}${mostRelevantInfo}${randomTouch}`;
     } else if (queryTokens.includes('how')) {
-      return `To understand how ${queryTokens.filter(t => t.length > 3).join(', ')} works: ${mostRelevantInfo}`;
+      return `${randomOpening}Here's how ${queryTokens.filter(t => t.length > 3).join(', ')} works: ${mostRelevantInfo}${randomTouch}`;
     } else if (queryTokens.includes('why')) {
-      return `The reason behind ${queryTokens.filter(t => t.length > 3).join(', ')} is: ${mostRelevantInfo}`;
+      return `${randomOpening}The reason behind ${queryTokens.filter(t => t.length > 3).join(', ')} is fascinating: ${mostRelevantInfo}${randomTouch}`;
     } else {
-      return `Regarding ${queryTokens.filter(t => t.length > 3).join(', ')}: ${mostRelevantInfo}`;
+      return `${randomOpening}Regarding ${queryTokens.filter(t => t.length > 3).join(', ')}: ${mostRelevantInfo}${randomTouch}`;
     }
   }
   
-  return "I don't have enough information about that topic yet. Would you like to learn about something else in this subject?";
+  return `I'm not entirely sure about that specific aspect of ${subject} yet, but I'd be happy to discuss something else in this area! What particular topic interests you most?`;
 };
 
 // Custom hook to use the transformer
