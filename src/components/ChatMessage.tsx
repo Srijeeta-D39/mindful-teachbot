@@ -41,8 +41,7 @@ const ChatMessage = ({ message, isLatest }: ChatMessageProps) => {
       // Set up the typing interval
       const typingInterval = setInterval(() => {
         if (index < content.length) {
-          // Fixed: Add the character at current index to displayed text
-          setDisplayedText((prev) => prev + content.charAt(index));
+          setDisplayedText(content.substring(0, index + 1));
           index++;
         } else {
           clearInterval(typingInterval);
