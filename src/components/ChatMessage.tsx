@@ -41,6 +41,7 @@ const ChatMessage = ({ message, isLatest }: ChatMessageProps) => {
       // Set up the typing interval
       const typingInterval = setInterval(() => {
         if (index < content.length) {
+          // Fixed: Add the character at current index to displayed text
           setDisplayedText((prev) => prev + content.charAt(index));
           index++;
         } else {
@@ -70,7 +71,7 @@ const ChatMessage = ({ message, isLatest }: ChatMessageProps) => {
         } message-appear relative`}
       >
         <div className="text-sm md:text-base whitespace-pre-wrap">
-          {message.role === "assistant" && isLatest ? displayedText : message.content}
+          {displayedText}
           {isTyping && <span className="typing-cursor">|</span>}
         </div>
         <div className="text-xs opacity-70 mt-1 text-right">
